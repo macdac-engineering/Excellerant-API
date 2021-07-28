@@ -1,0 +1,65 @@
+﻿<!doctype html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title id="main-page-title">Excellerant API Example</title>
+    <meta name="description" content="Excellerant API Example">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+</head>
+
+<body style="overscroll-behavior: contain;">
+    <!--[if lte IE 9]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+        <![endif]-->
+    <script>
+        //HACK: Some older browsers implement fetch but not AbortController. This breaks libraries which rely on both.
+        if (typeof fetch !== "undefined" && typeof AbortController === "undefined") {
+            console.warn("Outdated browser fetch implementation. Removing.");
+            window.fetch = undefined;
+        }
+    </script>
+
+    <script type="text/javascript" src="./axios.min.js"></script>
+    <script type="text/javascript" src="./api.js"></script>
+
+    <script>
+        api.setHostUrlAndToken('http://localhost:2703', '00000000-0000-0000-0000-000000000000');
+
+        const body = document.querySelector('body');
+        api.get('Report/ShopSummary').then(workplaces => {
+            workplaces.forEach(workplace => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <span>${workplace.name}: ${workplace.lastStateName}</span>
+                `;
+
+                body.appendChild(div);
+            });
+        }).catch(error => {
+            alert(error.message);
+        })
+
+    </script>
+</body>
+
+</html>
+
+<style>
+    body {
+        display: flex;
+        flex-flow: column nowrap;
+    }
+
+    body > div {
+        display: flex;
+        flex-flow: row wrap;
+    }
+
+    body > div > * {
+        margin-left: .25em;
+    }
+</style>
